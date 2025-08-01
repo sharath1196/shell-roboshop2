@@ -1,44 +1,17 @@
 #!/bin/bash
 
 source ./common.sh
-
+app_name=catalogue
 # check the user has root priveleges or not
 check_root
 
 # validate functions takes input as exit status, what command they tried to install
 
-dnf module disable nodejs -y &>> $LOG_FILE
-VALIDATE $? "Disabling default nodejs"
+create_user
 
-dnf module enable nodejs:20 -y &>> $LOG_FILE
-VALIDATE $? "enabling required nodejs"
+artifact_setup
 
-dnf install nodejs -y &>> $LOG_FILE
-VALIDATE $? "Installing nodejs"
-
-id roboshop
-if [ $? -ne 0 ]
-then
-    useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
-    VALIDATE $? "Adding a user 'roboshop'"
-else
-    echo "User already created"
-fi
-
-mkdir -p /app
-VALIDATE $? "Making a home directory of roboshop user" 
-
-curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>> $LOG_FILE
-VALIDATE $? "Downloading the artifact"
-
-cd /app 
-rm -rf /app/*
-unzip /tmp/catalogue.zip &>> $LOG_FILE
-VALIDATE $? "Extracting the artifact files here"
-
-cd /app 
-npm install &>> $LOG_FILE
-VALIDATE $? "Build the artifact" 
+node_setup 
 
 cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service
 VALIDATE $? "Copying the service file"

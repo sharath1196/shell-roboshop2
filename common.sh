@@ -36,4 +36,42 @@ VALIDATE(){
     fi
 }
 
+node_setup(){
+    dnf module disable nodejs -y &>> $LOG_FILE
+    VALIDATE $? "Disabling default nodejs"
+
+    dnf module enable nodejs:20 -y &>> $LOG_FILE
+    VALIDATE $? "enabling required nodejs"
+
+    dnf install nodejs -y &>> $LOG_FILE
+    VALIDATE $? "Installing nodejs"
+
+    cd /app
+    npm install &>> $LOG_FILE
+    VALIDATE $? "Build the artifact" 
+}
+
+create_user(){
+    id roboshop
+    if [ $? -ne 0 ]
+    then
+        useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
+        VALIDATE $? "Adding a user 'roboshop'"
+    else
+        echo "User already created"
+    fi
+}
+
+artifact_setup(){
+    mkdir -p /app
+    VALIDATE $? "Making a home directory of roboshop user" 
+
+    curl -o /tmp/$app_name.zip https://roboshop-artifacts.s3.amazonaws.com/$app_name-v3.zip &>> $LOG_FILE
+    VALIDATE $? "Downloading the artifact"
+
+    cd /app 
+    rm -rf /app/*
+    unzip /tmp/$app_name.zip &>> $LOG_FILE
+    VALIDATE $? "Extracting the artifact files here"
+}
 
