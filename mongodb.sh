@@ -5,7 +5,7 @@ source ./common.sh
 # check the user has root priveleges or not
 check_root
 
-cp $SCRIPT_DIR/mongo.repo /etc/yum.repos.d/mongodb.repo
+cp $SCRIPT_DIR/mongodb.repo /etc/yum.repos.d/mongodb.repo
 VALIDATE $? "Copying MongoDB repo"
 
 dnf install mongodb-org -y &>>$LOG_FILE
