@@ -2,15 +2,17 @@
 
 source ./common.sh
 app_name="catalogue"
+
 # check the user has root priveleges or not
 check_root
 
-# validate functions takes input as exit status, what command they tried to install
-
+# create a user to run the required service
 create_user
 
+# Downloading the artifact and extracting the files
 artifact_setup
 
+# setting up nodejs 
 node_setup 
 
 cp $SCRIPT_DIR/catalogue.service /etc/systemd/system/catalogue.service
@@ -30,7 +32,7 @@ VALIDATE $? "Installing mongodb client"
 
 if [ $(mongosh --host mongod.daws84.fun --eval 'db.getMongo().getDBNames().indexOf("catalogue")') -lt 0 ]
 then
-    mongosh --host mongod.daws84.fun </app/db/master-data.js
+    mongosh --host mongod.daws84.fun </app/db/master-data.js &>> $LOG_FILE
     VALIDATE $? "Loading the data in the MongoDB"
 else
     echo "DB already exits"
