@@ -63,15 +63,28 @@ create_user(){
 }
 
 artifact_setup(){
-    mkdir -p /app
-    VALIDATE $? "Making a home directory of roboshop user" 
+    if app_name="frontend"
+    then
+        rm -rf /usr/share/nginx/html/*  &>> $LOG_FILE
+        VALIDATE $? "Successfully removed default nginx page"
 
-    curl -o /tmp/$app_name.zip https://roboshop-artifacts.s3.amazonaws.com/$app_name-v3.zip &>> $LOG_FILE
-    VALIDATE $? "Downloading the artifact"
+        curl -o /tmp/frontend.zip https://roboshop-artifacts.s3.amazonaws.com/frontend-v3.zip  &>> $LOG_FILE
+        VALIDATE $? "Downloading the frontend artifact"
 
-    cd /app 
-    rm -rf /app/*
-    unzip /tmp/$app_name.zip &>> $LOG_FILE
-    VALIDATE $? "Extracting the artifact files here"
+        cd /usr/share/nginx/html 
+        unzip /tmp/frontend.zip  &>> $LOG_FILE
+        VALIDATE $? "Unzipping the frontend artifact"
+    else
+        mkdir -p /app
+        VALIDATE $? "Making a home directory of roboshop user" 
+
+        curl -o /tmp/$app_name.zip https://roboshop-artifacts.s3.amazonaws.com/$app_name-v3.zip &>> $LOG_FILE
+        VALIDATE $? "Downloading the artifact"
+
+        cd /app 
+        rm -rf /app/*
+        unzip /tmp/$app_name.zip &>> $LOG_FILE
+        VALIDATE $? "Extracting the artifact files here"
+    fi
 }
 
