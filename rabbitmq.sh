@@ -5,9 +5,6 @@ source ./common.sh
 # check the user has root priveleges or not
 check_root
 
-# validate functions takes input as exit status, what command they tried to install
-VALIDATE(){
-
 
 cp rabbitmq.repo /etc/yum.repos.d/rabbitmq.repo
 VALIDATE $? "Copying RabbitMQ repo"
@@ -32,6 +29,4 @@ VALIDATE $? "Creating RabbitMQ User"
 rabbitmqctl set_permissions -p / $USERNAME ".*" ".*" ".*"
 VALIDATE $? "Setting Permissions for RabbitMQ User"
 
-END_TIME=$(date +%s)
-TOTAL_TIME=$(( $END_TIME - $START_TIME ))
-echo "Total time taken to execute the script : $TOTAL_TIME seconds" | tee -a $LOG_FILE
+print_time
