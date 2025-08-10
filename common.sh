@@ -63,7 +63,7 @@ create_user(){
 }
 
 artifact_setup(){
-    if app_name="frontend"
+    if [ "app_name" == "frontend" ]
     then
         rm -rf /usr/share/nginx/html/*  &>> $LOG_FILE
         VALIDATE $? "Successfully removed default nginx page"
@@ -88,3 +88,10 @@ artifact_setup(){
     fi
 }
 
+print_time(){
+
+    END_TIME=$(date +%s)
+    TOTAL_TIME=$(( $END_TIME - $START_TIME ))
+    echo "Total time taken to execute the script : $TOTAL_TIME seconds" | tee -a $LOG_FILE
+    
+}
