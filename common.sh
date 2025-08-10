@@ -89,7 +89,6 @@ artifact_setup(){
 }
 
 print_time(){
-
     END_TIME=$(date +%s)
     TOTAL_TIME=$(( $END_TIME - $START_TIME ))
     echo "Total time taken to execute the script : $TOTAL_TIME seconds" | tee -a $LOG_FILE
