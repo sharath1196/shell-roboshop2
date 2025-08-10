@@ -18,7 +18,7 @@ go get &>> $LOG_FILE
 go build &>> $LOG_FILE
 VALIDATE $? "Building from the artifact"
 
-cp dispatch.service /etc/systemd/system/dispatch.service
+cp $SCRIPT_DIR/dispatch.service /etc/systemd/system/dispatch.service
 VALIDATE $? "Copying the service "
 
 systemctl daemon-reload &>> $LOG_FILE
